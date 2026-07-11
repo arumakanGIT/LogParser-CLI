@@ -1,28 +1,29 @@
 import re
 import time
-from config_manager import load_app_settings , save_app_settings
+import argparse
 
+# from config_manager import load_app_settings , save_app_settings
+
+parser = argparse.ArgumentParser(description="A tool for log analysis.")
+parser.add_argument("path", nargs="?", default="access.log", help="Path to the log file")
+parser.add_argument("--live", action="store_true", help="Enable live log monitoring")
 
 start_time = time.perf_counter()
-path , live_log = load_app_settings()
+path , live_log =
 pattern = re.compile(
     r"^(?P<ip>\d+\.\d+\.\d+\.\d+)\s+-(?P<username>.*)-\s+\[(?P<timeanddate>(?P<date>\d{2}\/\w{3}\/\d{4}):"
     r"(?P<time>\d{2}:\d{2}:\d{2})\s(?P<GMT>(\+|\-)\d{4})])\s+\"((?P<method>\w+) (?P<Path>\/\S*) "
     r"(?P<Protocol>\S*))\"\s+(?P<Code>\d+)\s+(?P<Size>\d+)\s+\"(?P<Referrer>.*)\"\s+\"(?P<UserAgent>.*)\"$")
+
 total_logs = 0
 accepted_logs = 0
-menu_index = 1
 
 while menu_index != 0:
     print(f"""
     default path:{path}
     live analyzer = {live_log}
-    1. enter 1 to start
-    2. enter 2 to change default path
-    3. enter 3 to change live analyzer
-    4. enter 0 to change default path
     """)
-    menu_index = int(input())
+    command = input()
 
     if menu_index == 1:
         with open(path, 'r', encoding='utf-8') as file:
@@ -32,6 +33,10 @@ while menu_index != 0:
                 if log_match:
                     accepted_logs += 1
                 print(f"{total_logs}", end="\r")
+    elif menu_index == 2:
+
+    elif menu_index == 3:
+
 
     print(f"""
     ================================
