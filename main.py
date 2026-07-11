@@ -1,32 +1,46 @@
 import re
 import time
+from config_manager import load_app_settings , save_app_settings
 
-live_log = True
-path = 'access.log'
+
 start_time = time.perf_counter()
-
+path , live_log = load_app_settings()
 pattern = re.compile(
-    r"^(?P<ip>\d+\.\d+\.\d+\.\d+)\s+-(?P<username>.*)-\s+\[(?P<timeanddate>(?P<date>\d{2}\/\w{3}\/\d{4}):(?P<time>\d{2}:\d{2}:\d{2})\s(?P<GMT>(\+|\-)\d{4})])\s+\"((?P<method>\w+) (?P<Path>\/\S*) (?P<Protocol>\S*))\"\s+(?P<Code>\d+)\s+(?P<Size>\d+)\s+\"(?P<Referrer>.*)\"\s+\"(?P<UserAgent>.*)\"$")
-
+    r"^(?P<ip>\d+\.\d+\.\d+\.\d+)\s+-(?P<username>.*)-\s+\[(?P<timeanddate>(?P<date>\d{2}\/\w{3}\/\d{4}):"
+    r"(?P<time>\d{2}:\d{2}:\d{2})\s(?P<GMT>(\+|\-)\d{4})])\s+\"((?P<method>\w+) (?P<Path>\/\S*) "
+    r"(?P<Protocol>\S*))\"\s+(?P<Code>\d+)\s+(?P<Size>\d+)\s+\"(?P<Referrer>.*)\"\s+\"(?P<UserAgent>.*)\"$")
 total_logs = 0
 accepted_logs = 0
+menu_index = 1
 
-with open(path, 'r', encoding='utf-8') as file:
-    for line in file:
-        total_logs += 1
-        log_match = pattern.search(line.strip())
-        if log_match:
-            accepted_logs += 1
-        print(f"{total_logs}", end="\r")
+while menu_index != 0:
+    print(f"""
+    default path:{path}
+    live analyzer = {live_log}
+    1. enter 1 to start
+    2. enter 2 to change default path
+    3. enter 3 to change live analyzer
+    4. enter 0 to change default path
+    """)
+    menu_index = int(input())
 
-print(f"""
-================================
-          \tFinished
-          \taccepted logs: {accepted_logs}/{total_logs}
-================================""")
+    if menu_index == 1:
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                total_logs += 1
+                log_match = pattern.search(line.strip())
+                if log_match:
+                    accepted_logs += 1
+                print(f"{total_logs}", end="\r")
 
-end_time = time.perf_counter()
-execution_time = end_time - start_time
-print(f"executiontime = {execution_time:.6f}s")
+    print(f"""
+    ================================
+              \tFinished
+              \taccepted logs: {accepted_logs}/{total_logs}
+    ================================""")
 
-a = input("Press enter to exit...")
+    end_time = time.perf_counter()
+    execution_time = end_time - start_time
+    print(f"executiontime = {execution_time:.6f}s")
+
+    a = input("Press enter to exit...")
